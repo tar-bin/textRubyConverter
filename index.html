@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <title>青空文庫・カクヨム記法をルビタグに変換するサンプル</title>
+  </head>
+  <body>
+    <div id="app">
+        <div class="mb-3">
+            <label for="inputText1" class="form-label">入力</label>
+            <textarea class="form-control" id="inputText1" rows="10" v-model="inputText1"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="outputTextarea" class="form-label">出力</label>
+            <textarea class="form-control" id="outputTextarea" rows="10" v-model="outputText"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+      
+        createApp({
+          data() {
+            return {
+              inputText1: '',
+              outputText: '',
+            }
+          },
+          watch: {
+            inputText1(newText, oldText) {
+                this.updateText(newText);
+            }
+          },
+          methods: {
+            updateText(inputText1) {
+              if (inputText1 === null || inputText1 === "") {
+                  return;
+              }
+
+              const result = inputText1.replace(/《《(.+?)》》/g, (match, c1) => c1.replace(/(.)/g, '<ruby>$1<rt>・</rt></ruby>'))
+                .replace(/[\|｜](.+?)《(.+?)》/g, '<ruby>$1<rt>$2</rt></ruby>')
+                .replace(/([一-龠]+)《(.+?)》/g, '<ruby>$1<rt>$2</rt></ruby>')
+                .replace(/[\|｜]《(.+?)》/g, '《$1》');
+
+              this.outputText = result;
+            }
+          }
+        }).mount('#app')
+    </script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
